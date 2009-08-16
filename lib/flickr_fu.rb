@@ -9,6 +9,7 @@ require 'digest/md5'
 require 'yaml'
 require 'time'
 require 'date'
+require 'logger'
 
 # base must load first
 [ "base",

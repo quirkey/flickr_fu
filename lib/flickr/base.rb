@@ -135,17 +135,31 @@ module Flickr
     # creates and/or returns the Flickr::Urls object
     def urls() @urls ||= Flickr::Urls.new(self) end
             
+    def self.logger
+      @@logger ||= ::Logger.new(STDOUT)
+    end
+    
+    def self.logger=(logger)
+      @@logger = logger
+    end
+    
+    def logger
+      self.class.logger
+    end
+    
     protected
     
     # For easier testing. You can mock this method with a XML file you're expecting to receive
     def request_over_http(options, http_method, endpoint)
       if http_method == :get
         api_call = endpoint + "?" + options.collect{|k,v| "#{k}=#{CGI.escape(v.to_s)}"}.join('&')
+        logger.info "-- flickr_fu GET #{api_call}"
         Net::HTTP.get(URI.parse(api_call))
       else
+        logger.info "-- flickr_fu POST #{endpoint} #{options.inspect}"
         Net::HTTP.post_form(URI.parse(endpoint), options).body
       end
     end
-    
+        
   end
 end
