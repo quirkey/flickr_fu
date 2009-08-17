@@ -39,7 +39,7 @@ class Flickr::People::Person
   # * page (Optional)
   #     The page of results to return. If this argument is omitted, it defaults to 1.
   def public_photos(options = {})
-    options.merge!({:user_id => self.nsid, :extras => "license,date_upload,date_taken,owner_name,icon_server,original_format,last_update,geo,tags,machine_tags,o_dims,views,media"})
+    options.merge!({:user_id => self.nsid, :extras => Flickr::Photos::Photo::EXTRAS})
 
     rsp = @flickr.send_request('flickr.people.getPublicPhotos', options)
 

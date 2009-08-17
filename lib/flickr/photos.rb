@@ -1,6 +1,4 @@
 class Flickr::Photos < Flickr::Base
-  
-  EXTRAS = "license,date_upload,date_taken,owner_name,icon_server,original_format,last_update,geo,tags,machine_tags,o_dims,views,media"
 
   def initialize(flickr)
     @flickr = flickr
@@ -118,7 +116,7 @@ class Flickr::Photos < Flickr::Base
   #     The type of media to search for. 'photo', 'video', or 'both' are allowed arguments, with 'both' being the default.
   # 
   def search(options)
-    options.merge!({:extras => EXTRAS})    
+    options.merge!({:extras => Photo::EXTRAS})    
     rsp = @flickr.send_request('flickr.photos.search', options)
     PhotoResponse.from_response(@flickr, rsp, :api => self, :method => 'flickr.photos.search', :options => options)
   end
@@ -137,13 +135,13 @@ class Flickr::Photos < Flickr::Base
   #     The type of media to search for. 'photo', 'video', or 'both' are allowed arguments, with 'both' being the default.
   # 
   def get_recent(options = {})
-    options.merge!({:extras => "license,date_upload,date_taken,owner_name,icon_server,original_format,last_update,geo,tags,machine_tags,o_dims,views,media"})
+    options.merge!({:extras => Photo::EXTRAS})
     rsp = @flickr.send_request('flickr.photos.getRecent', options)
     PhotoResponse.from_response(@flickr, rsp, :api => self, :method => 'flickr.photos.getRecent', :options => options)
   end
   
   def interesting(options)
-    options.merge!({:extras => EXTRAS})
+    options.merge!({:extras => Photo::EXTRAS})
     rsp = @flickr.send_request('flickr.interestingness.getList', options)
     PhotoResponse.from_response(@flickr, rsp, :api => self, :method => 'flickr.interestingness.getList', :options => options)
   end
