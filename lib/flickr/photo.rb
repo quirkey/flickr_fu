@@ -88,22 +88,22 @@ class Flickr::Photos::Photo
   #       :original - original image, either a jpg, gif or png, depending on source format
   #
   def image_url(size = :medium)
-	# It turns out that flickr always stores all the sizes of the picture even when getSizes call returns otherwise.
-	# Not calling getSizes is also very important for performance reasons.
-	# Retrieving 30 search results means calling the API 31 times if you call getSizes every time.
-	# Mind that you still need to call getSizes if you go out for the original image.
-	if size == :original
-	  size_hash[size.to_s].source if size_hash.has_key? size.to_s
-	else
-	  key = "_#{size_key(size.to_sym)}"
-	  key = "" if key == "_"
-	  "http://farm#{farm}.static.flickr.com/#{server}/#{id}_#{secret}#{key}.jpg"
-	end
+  	# It turns out that flickr always stores all the sizes of the picture even when getSizes call returns otherwise.
+  	# Not calling getSizes is also very important for performance reasons.
+  	# Retrieving 30 search results means calling the API 31 times if you call getSizes every time.
+  	# Mind that you still need to call getSizes if you go out for the original image.
+  	if size == :original
+  	  size_hash[size.to_s].source if size_hash.has_key? size.to_s
+  	else
+  	  key = "_#{size_key(size.to_sym)}"
+  	  key = "" if key == "_"
+  	  "http://farm#{farm}.static.flickr.com/#{server}/#{id}_#{secret}#{key}.jpg"
+  	end
   end
 
   def photopage_url
-	# Keeping the same convention as image_url (foo_url)
-	url_photopage
+  	# Keeping the same convention as image_url (foo_url)
+  	url_photopage
   end
 
   def video_url
@@ -258,6 +258,10 @@ class Flickr::Photos::Photo
   def url_photopage # :nodoc:
     attach_info
     @url_photopage
+  end
+  
+  def buddy_icon
+    Flickr::People::Person.buddy_icon(icon_server, icon_farm, owner)
   end
 
   def comments # :nodoc:
