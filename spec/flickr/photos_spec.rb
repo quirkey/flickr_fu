@@ -1,14 +1,35 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe Flickr::Photos do
+  include SpecHelper
   
   before :each do
     @flickr = SpecHelper.flickr
   end
   
+  describe ".get_recent" do
+    before do
+      mock_flickr_request_with_fixture(@flickr, 'photos/get_recent')
+      @photo_response = @flickr.photos.get_recent
+    end
+    
+    it 'should return a PhotoResponse' do
+      @photo_response.should be_instance_of(Flickr::Photos::PhotoResponse)
+    end
+    
+    it 'should load photos' do
+      @photo_response.photos.length.should == 100
+    end
+    
+    it 'should return the icon farm and server for photos'
+    
+    it 'should set the tags on the photos'
+    
+    it 'should pull the title and description for the photos' 
+  end
+  
   describe ".licenses" do
     before :all do
-      @licenses_xml = File.read(File.dirname(__FILE__) + "/../fixtures/flickr/photos/licenses/get_info.xml")
       @valid_licenses = {
         0 => Flickr::Photos::License.new(:id => 0, :name => "All Rights Reserved", :url => ""),
         4 => Flickr::Photos::License.new(:id => 4, :name => "Attribution License", :url => "http://creativecommons.org/licenses/by/2.0/"),
@@ -21,12 +42,12 @@ describe Flickr::Photos do
     end
     
     it "should return all valid licenses" do
-      @flickr.should_receive(:request_over_http).and_return(@licenses_xml)
+      mock_flickr_request_with_fixture(@flickr, 'photos/licenses/get_info')
       @flickr.photos.licenses.should == @valid_licenses
     end
     
     it "should not not call Flickr API more than once" do
-      @flickr.should_receive(:request_over_http).once.and_return(@licenses_xml)
+      mock_flickr_request_with_fixture(@flickr, 'photos/licenses/get_info')
       @flickr.photos.licenses
       @flickr.photos.licenses
     end
@@ -36,8 +57,7 @@ describe Flickr::Photos do
     it "should return a photo when a valid id is given" do
       photo_id = 2984637736
       #photo_upload_date = 1225297614
-      info_xml = File.read(File.dirname(__FILE__) + "/../fixtures/flickr/photos/get_info-0.xml")
-      @flickr.should_receive(:request_over_http).and_return(info_xml)
+      mock_flickr_request_with_fixture(@flickr, 'photos/get_info-0')
       
       photo = @flickr.photos.find_by_id(photo_id)
       photo.id.should == photo_id
