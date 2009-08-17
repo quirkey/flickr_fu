@@ -118,7 +118,7 @@ class Flickr::Photos < Flickr::Base
   def search(options)
     options.merge!({:extras => Photo::EXTRAS})    
     rsp = @flickr.send_request('flickr.photos.search', options)
-    PhotoResponse.from_response(@flickr, rsp, :api => self, :method => 'flickr.photos.search', :options => options)
+    PhotoResponse.from_response(@flickr, rsp, :api => self, :method => 'search', :options => options)
   end
     
   # Returns a list of the latest public photos uploaded to flickr.
@@ -137,13 +137,13 @@ class Flickr::Photos < Flickr::Base
   def get_recent(options = {})
     options.merge!({:extras => Photo::EXTRAS})
     rsp = @flickr.send_request('flickr.photos.getRecent', options)
-    PhotoResponse.from_response(@flickr, rsp, :api => self, :method => 'flickr.photos.getRecent', :options => options)
+    PhotoResponse.from_response(@flickr, rsp, :api => self, :method => 'get_recent', :options => options)
   end
   
   def interesting(options)
     options.merge!({:extras => Photo::EXTRAS})
     rsp = @flickr.send_request('flickr.interestingness.getList', options)
-    PhotoResponse.from_response(@flickr, rsp, :api => self, :method => 'flickr.interestingness.getList', :options => options)
+    PhotoResponse.from_response(@flickr, rsp, :api => self, :method => 'interesting', :options => options)
   end
   
   def licenses

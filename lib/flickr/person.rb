@@ -40,43 +40,7 @@ class Flickr::People::Person
   #     The page of results to return. If this argument is omitted, it defaults to 1.
   def public_photos(options = {})
     options.merge!({:user_id => self.nsid, :extras => Flickr::Photos::Photo::EXTRAS})
-
     rsp = @flickr.send_request('flickr.people.getPublicPhotos', options)
-
-    returning Flickr::Photos::PhotoResponse.new(:page => rsp.photos[:page].to_i,
-                                :pages => rsp.photos[:pages].to_i,
-                                :per_page => rsp.photos[:perpage].to_i,
-                                :total => rsp.photos[:total].to_i,
-                                :photos => [],
-                                :api => self,
-                                :method => 'public_photos',
-                                :options => options) do |photos|
-      rsp.photos.photo.each do |photo|
-        attributes = {:id => photo[:id], 
-                      :owner => photo[:owner], 
-                      :secret => photo[:secret], 
-                      :server => photo[:server], 
-                      :farm => photo[:farm], 
-                      :title => photo[:title], 
-                      :is_public => photo[:ispublic], 
-                      :is_friend => photo[:isfriend], 
-                      :is_family => photo[:isfamily],
-                      :license_id => photo[:license].to_i,
-                      :uploaded_at => (Time.at(photo[:dateupload].to_i) rescue nil),
-                      :taken_at => (Time.parse(photo[:datetaken]) rescue nil),
-                      :owner_name => photo[:ownername],
-                      :icon_server => photo[:icon_server],
-                      :original_format => photo[:originalformat],
-                      :updated_at => (Time.at(photo[:lastupdate].to_i) rescue nil),
-                      :geo => photo[:geo],
-                      :tags => photo[:tags],
-                      :machine_tags => photo[:machine_tags],
-                      :o_dims => photo[:o_dims],
-                      :views => photo[:views].to_i,
-                      :media => photo[:media]}
-
-        photos << Flickr::Photos::Photo.new(@flickr, attributes)
-      end if rsp.photos.photo
-    end
+    PhotoResponse.from_response(@flickr, rsp, :api => self, :method => 'public_photos', :options => options)
   end
 end
