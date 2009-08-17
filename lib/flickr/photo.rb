@@ -297,6 +297,11 @@ class Flickr::Photos::Photo
     attach_info
     @notes
   end
+  
+  # takes an array or string and stores as an array
+  def tags=(tags_list)
+    @tags = tags_list.is_a?(String) ? tags_list.split(' ') : tags_list
+  end
 
   protected
   def size_hash
