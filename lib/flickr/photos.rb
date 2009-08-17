@@ -128,9 +128,7 @@ class Flickr::Photos < Flickr::Base
                                 :method => 'search',
                                 :options => options) do |photos|
       rsp.photos.photo.each do |photo|
-        attributes = create_attributes(photo)
-
-        photos << Photo.new(@flickr, attributes)
+        photos << Photo.from_response(@flickr, photo)
       end if rsp.photos.photo
     end
   end
@@ -161,9 +159,7 @@ class Flickr::Photos < Flickr::Base
                                 :method => 'flickr.photos.getRecent',
                                 :options => options) do |photos|
       rsp.photos.photo.each do |photo|
-        attributes = create_attributes(photo)
-
-        photos << Photo.new(@flickr, attributes)
+        photos << Photo.from_response(@flickr, photo)
       end if rsp.photos.photo
     end
   end
@@ -182,10 +178,7 @@ class Flickr::Photos < Flickr::Base
                                 :method => 'flickr.interestingness.getList',
                                 :options => options) do |photos|
       rsp.photos.photo.each do |photo|
-        attributes = create_attributes(photo)
-
-
-        photos << Photo.new(@flickr, attributes)
+        photos << Photo.from_response(@flickr, photo)
       end if rsp.photos.photo
     end
   end
@@ -211,36 +204,7 @@ class Flickr::Photos < Flickr::Base
   # Raises an error if photo not found
   def find_by_id(photo_id)
     rsp = @flickr.send_request('flickr.photos.getInfo', :photo_id => photo_id)
-    Photo.new(@flickr, :id => rsp.photo[:id].to_i, :owner => rsp.photo.owner,
-      :secret => rsp.photo[:secret], :server => rsp.photo[:server].to_i, :farm => rsp.photo[:farm], 
-      :title => rsp.photo.title,
-      :is_public => rsp.photo.visibility[:public], :is_friend => rsp.photo.visibility[:is_friend], :is_family => rsp.photo.visibility[:is_family])
+    Photo.from_response(@flickr, rsp.photo)
   end
-  
-  protected
-  def create_attributes(photo)
-    {:id => photo[:id], 
-     :owner => photo[:owner], 
-     :secret => photo[:secret], 
-     :server => photo[:server], 
-     :farm => photo[:farm], 
-     :title => photo[:title], 
-     :is_public => photo[:ispublic], 
-     :is_friend => photo[:isfriend], 
-     :is_family => photo[:isfamily],
-     :license_id => photo[:license].to_i,
-     :uploaded_at => (Time.at(photo[:dateupload].to_i) rescue nil),
-     :taken_at => (Time.parse(photo[:datetaken]) rescue nil),
-     :owner_name => photo[:ownername],
-     :icon_server => photo[:icon_server],
-     :original_format => photo[:originalformat],
-     :updated_at => (Time.at(photo[:lastupdate].to_i) rescue nil),
-     :geo => photo[:geo],
-     :tags => photo[:tags],
-     :machine_tags => photo[:machine_tags],
-     :o_dims => photo[:o_dims],
-     :views => photo[:views].to_i,
-     :media => photo[:media]}
-  end
-  
+    
 end

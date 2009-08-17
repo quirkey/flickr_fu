@@ -22,7 +22,7 @@ describe Flickr::Photos do
       @photo_response.photos.first.should be_instance_of(Flickr::Photos::Photo)
     end
     
-    it 'should return the icon farm and server for photos' do
+    it 'should set the icon farm and server for photos' do
       @photo_response.photos.first.icon_server.should == "1234"
       @photo_response.photos.first.icon_farm.should == "1"
     end
@@ -31,9 +31,14 @@ describe Flickr::Photos do
       @photo_response.photos.first.tags.should == %w{photo raw makeshift}
     end
     
-    it 'should pull the title for the photos' do
+    it 'should set the title for the photos' do
       @photo_response.photos.first.title.should == "DSC05657"
     end
+    
+    it 'should set the location of the photos' do
+      @photo_response.photos.first.location.should be_instance_of(Flickr::Photos::Location)
+    end
+    
   end
   
   describe ".licenses" do

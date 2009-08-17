@@ -8,8 +8,15 @@ class Flickr::Photos::Location
   # * attributes (Required)
   #     a hash of attributes used to set the initial values of the Location object
   def initialize(attributes)
-    attributes.each do |k,v|
-      send("#{k}=", v)
+    case attributes
+    when Flickr::Photos::Location
+      return attributes
+    when Hash
+      attributes.each do |k,v|
+        send("#{k}=", v)
+      end
+    when Array
+      self.latitude, self.longitude, self.accuracy = attributes
     end
   end
 end

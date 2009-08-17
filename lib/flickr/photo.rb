@@ -18,6 +18,36 @@ class Flickr::Photos::Photo
       send("#{k}=", v)
     end
   end
+  
+  def self.from_response(flickr, photo)
+    new(flickr, {
+      :id              => photo[:id].to_i, 
+      :owner           => photo[:owner], 
+      :secret          => photo[:secret], 
+      :server          => photo[:server], 
+      :farm            => photo[:farm], 
+      :title           => photo[:title], 
+      :is_public       => photo[:ispublic], 
+      :is_friend       => photo[:isfriend], 
+      :is_family       => photo[:isfamily],
+      :license_id      => photo[:license].to_i,
+      :uploaded_at     => (Time.at(photo[:dateupload].to_i) rescue nil),
+      :taken_at        => (Time.parse(photo[:datetaken]) rescue nil),
+      :owner_name      => photo[:ownername],
+      :icon_server     => photo[:iconserver],
+      :icon_farm       => photo[:iconfarm],
+      :original_format => photo[:originalformat],
+      :updated_at      => (Time.at(photo[:lastupdate].to_i) rescue nil),
+      :location        => [photo[:latitude], photo[:longitude], photo[:accuracy]],
+      :tags            => photo[:tags],
+      :machine_tags    => photo[:machine_tags],
+      :o_dims          => photo[:o_dims],
+      :views           => photo[:views].to_i,
+      :media           => photo[:media]
+    })
+  end
+
+
 
   # Alias to image_url method
   def url(size = :medium)
@@ -179,7 +209,11 @@ class Flickr::Photos::Photo
     end
   end
 
-  def location= location
+  def location=(location)
+    @location = Flickr::Photos::Location.new(location)
+  end
+
+  def set_location(location)
     if !location.nil?
       @flickr.photos.geo.set_location(self.id, location.latitude, location.longitude, location.accuracy)
     else
