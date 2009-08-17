@@ -8,7 +8,7 @@ describe Flickr::Photos do
   end
   
   describe ".get_recent" do
-    before do
+    before :each do
       mock_flickr_request_with_fixture(@flickr, 'photos/get_recent')
       @photo_response = @flickr.photos.get_recent
     end

@@ -118,22 +118,9 @@ class Flickr::Photos < Flickr::Base
   #     The type of media to search for. 'photo', 'video', or 'both' are allowed arguments, with 'both' being the default.
   # 
   def search(options)
-    options.merge!({:extras => EXTRAS})
-
+    options.merge!({:extras => EXTRAS})    
     rsp = @flickr.send_request('flickr.photos.search', options)
-
-    returning PhotoResponse.new(:page => rsp.photos[:page].to_i,
-                                :pages => rsp.photos[:pages].to_i,
-                                :per_page => rsp.photos[:perpage].to_i,
-                                :total => rsp.photos[:total].to_i,
-                                :photos => [],
-                                :api => self,
-                                :method => 'search',
-                                :options => options) do |photos|
-      rsp.photos.photo.each do |photo|
-        photos << Photo.from_response(@flickr, photo)
-      end if rsp.photos.photo
-    end
+    PhotoResponse.from_response(@flickr, rsp, :api => self, :method => 'flickr.photos.search', :options => options)
   end
     
   # Returns a list of the latest public photos uploaded to flickr.
@@ -150,40 +137,15 @@ class Flickr::Photos < Flickr::Base
   #     The type of media to search for. 'photo', 'video', or 'both' are allowed arguments, with 'both' being the default.
   # 
   def get_recent(options = {})
-    options.merge!({:extras => EXTRAS})
-
+    options.merge!({:extras => "license,date_upload,date_taken,owner_name,icon_server,original_format,last_update,geo,tags,machine_tags,o_dims,views,media"})
     rsp = @flickr.send_request('flickr.photos.getRecent', options)
-
-    returning PhotoResponse.new(:page => rsp.photos[:page].to_i,
-                                :pages => rsp.photos[:pages].to_i,
-                                :per_page => rsp.photos[:perpage].to_i,
-                                :total => rsp.photos[:total].to_i,
-                                :photos => [], :api => self,
-                                :method => 'flickr.photos.getRecent',
-                                :options => options) do |photos|
-      rsp.photos.photo.each do |photo|
-        photos << Photo.from_response(@flickr, photo)
-      end if rsp.photos.photo
-    end
+    PhotoResponse.from_response(@flickr, rsp, :api => self, :method => 'flickr.photos.getRecent', :options => options)
   end
   
   def interesting(options)
     options.merge!({:extras => EXTRAS})
-
     rsp = @flickr.send_request('flickr.interestingness.getList', options)
-
-    returning PhotoResponse.new(:page => rsp.photos[:page].to_i,
-                                :pages => rsp.photos[:pages].to_i,
-                                :per_page => rsp.photos[:perpage].to_i,
-                                :total => rsp.photos[:total].to_i,
-                                :photos => [],
-                                :api => self,
-                                :method => 'flickr.interestingness.getList',
-                                :options => options) do |photos|
-      rsp.photos.photo.each do |photo|
-        photos << Photo.from_response(@flickr, photo)
-      end if rsp.photos.photo
-    end
+    PhotoResponse.from_response(@flickr, rsp, :api => self, :method => 'flickr.interestingness.getList', :options => options)
   end
   
   def licenses

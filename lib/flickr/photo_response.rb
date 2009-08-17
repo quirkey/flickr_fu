@@ -14,6 +14,21 @@ class Flickr::Photos::PhotoResponse
     end
   end
 
+  # Create a PhotoResponse object from a typical flickr XML response
+  def self.from_response(flickr, response, additional_options = {})
+    returning new({
+      :page     => response.photos[:page].to_i,
+      :pages    => response.photos[:pages].to_i,
+      :per_page => response.photos[:perpage].to_i,
+      :total    => response.photos[:total].to_i,
+      :photos   => []
+    }.merge(additional_options)) do |photos|
+      response.photos.photo.each do |photo|
+        photos << Flickr::Photos::Photo.from_response(flickr, photo)
+      end if response.photos.photo
+    end
+  end
+
   # Add a Flickr::Photos::Photo object to the photos array.  It does nothing if you pass a non photo object
   def <<(photo)
     self.photos ||= []
