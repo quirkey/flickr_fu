@@ -55,6 +55,11 @@ class Flickr::Auth < Flickr::Base
     end
   end
 
+  # Load the person associated with this auth token
+  def person
+    @person ||= @flickr.people.find_by_id(token.user_id)
+  end
+  
   private
   def get_frob
     rsp = @flickr.send_request('flickr.auth.getFrob')
