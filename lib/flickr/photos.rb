@@ -120,7 +120,14 @@ class Flickr::Photos < Flickr::Base
     rsp = @flickr.send_request('flickr.photos.search', options)
     PhotoResponse.from_response(@flickr, rsp, :api => self, :method => 'search', :options => options)
   end
-    
+  
+  # Requires 'read' permission && min_date option
+  def recently_updated(options)
+    options.merge!({:extras => Photo::EXTRAS})    
+    rsp = @flickr.send_request('flickr.photos.recentlyUpdated', options)
+    PhotoResponse.from_response(@flickr, rsp, :api => self, :method => 'recently_updated', :options => options)
+  end 
+  
   # Returns a list of the latest public photos uploaded to flickr.
   # 
   # == Authentication
