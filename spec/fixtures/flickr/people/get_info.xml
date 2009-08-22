@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<rsp stat="ok">
+<person id="32169282@N00" nsid="32169282@N00" isadmin="0" ispro="1" iconserver="46" iconfarm="1" path_alias="katandaq">
+	<username>kat_and_aq</username>
+	<realname />
+	<mbox_sha1sum>fdcf7af0fc8a73fbd148d7d0188936916f78cd34</mbox_sha1sum>
+	<location />
+	<photosurl>http://www.flickr.com/photos/katandaq/</photosurl>
+	<profileurl>http://www.flickr.com/people/katandaq/</profileurl>
+
+	<mobileurl>http://m.flickr.com/photostream.gne?id=2598759</mobileurl>
+	<photos>
+		<firstdatetaken>2006-02-26 14:17:25</firstdatetaken>
+		<firstdate>1141277283</firstdate>
+		<count>1286</count>
+		<views>4850</views>
+
+	</photos>
+</person>
+</rsp>
