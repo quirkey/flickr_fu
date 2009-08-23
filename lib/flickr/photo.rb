@@ -42,7 +42,7 @@ class Flickr::Photos::Photo
         :original_format => photo[:originalformat],
         :updated_at      => (Time.at(photo.dates[:lastupdate].to_i) rescue nil),
         :location        => (photo.location ? [photo.location[:latitude], photo.location[:longitude], photo.location[:accuracy]] : [nil, nil, nil]),
-        :tags            => (tags = []; photo.tags.tag.each {|t| tags << t[:raw].to_s }; tags),
+        :tags            => (begin; tags = []; photo.tags.tag.each {|t| tags << t[:raw].to_s }; tags; rescue nil; end),
         :media           => photo[:media],
         :info_added      => true,
         :description     => photo.description,
