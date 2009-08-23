@@ -46,7 +46,10 @@ class Flickr::Photos::Photo
       :machine_tags    => photo[:machine_tags],
       :o_dims          => photo[:o_dims],
       :views           => photo[:views].to_i,
-      :media           => photo[:media]
+      :media           => photo[:media],
+      :info_added      => !!photo.description,
+      :description     => photo.description,
+      :url_photopage   => (photo.urls ? photo.urls.url : nil)
     })
   end
 
