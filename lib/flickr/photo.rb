@@ -41,7 +41,7 @@ class Flickr::Photos::Photo
         :owner_name      => photo.owner[:username],
         :original_format => photo[:originalformat],
         :updated_at      => (Time.at(photo.dates[:lastupdate].to_i) rescue nil),
-        :location        => [photo.location[:latitude], photo.location[:longitude], photo.location[:accuracy]],
+        :location        => (photo.location ? [photo.location[:latitude], photo.location[:longitude], photo.location[:accuracy]] : nil),
         :tags            => photo.tags.tag.collect {|t| t[:raw]},
         :media           => photo[:media],
         :info_added      => true,
