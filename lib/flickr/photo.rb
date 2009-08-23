@@ -25,6 +25,10 @@ class Flickr::Photos::Photo
   def self.from_response(flickr, photo)
     # switch on the kind of photo response
     attrs = if photo.description
+      tags = []
+      if photo.tags && photo.tags.tag
+        photo.tags.tag.each {|t| tags << t[:raw].to_s }
+      end
       {
         :id              => photo[:id].to_i, 
         :owner           => photo.owner[:nsid], 
@@ -42,7 +46,7 @@ class Flickr::Photos::Photo
         :original_format => photo[:originalformat],
         :updated_at      => (Time.at(photo.dates[:lastupdate].to_i) rescue nil),
         :location        => (photo.location ? [photo.location[:latitude], photo.location[:longitude], photo.location[:accuracy]] : [nil, nil, nil]),
-        :tags            => (begin; tags = []; photo.tags.tag.each {|t| tags << t[:raw].to_s }; tags; rescue nil; end),
+        :tags            => tags,
         :media           => photo[:media],
         :info_added      => true,
         :description     => photo.description,
