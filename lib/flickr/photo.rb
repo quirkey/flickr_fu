@@ -23,34 +23,59 @@ class Flickr::Photos::Photo
   end
   
   def self.from_response(flickr, photo)
-    new(flickr, {
-      :id              => photo[:id].to_i, 
-      :owner           => photo[:owner], 
-      :secret          => photo[:secret], 
-      :server          => photo[:server], 
-      :farm            => photo[:farm], 
-      :title           => photo[:title], 
-      :is_public       => photo[:ispublic], 
-      :is_friend       => photo[:isfriend], 
-      :is_family       => photo[:isfamily],
-      :license_id      => photo[:license].to_i,
-      :uploaded_at     => (Time.at(photo[:dateupload].to_i) rescue nil),
-      :taken_at        => (Time.parse(photo[:datetaken]) rescue nil),
-      :owner_name      => photo[:ownername],
-      :icon_server     => photo[:iconserver],
-      :icon_farm       => photo[:iconfarm],
-      :original_format => photo[:originalformat],
-      :updated_at      => (Time.at(photo[:lastupdate].to_i) rescue nil),
-      :location        => [photo[:latitude], photo[:longitude], photo[:accuracy]],
-      :tags            => photo[:tags],
-      :machine_tags    => photo[:machine_tags],
-      :o_dims          => photo[:o_dims],
-      :views           => photo[:views].to_i,
-      :media           => photo[:media],
-      :info_added      => !!photo.description,
-      :description     => photo.description,
-      :url_photopage   => (photo.urls ? photo.urls.url : nil)
-    })
+    # switch on the kind of photo response
+    attrs = if photo.description
+      {
+        :id              => photo[:id].to_i, 
+        :owner           => photo.owner[:nsid], 
+        :secret          => photo[:secret], 
+        :server          => photo[:server], 
+        :farm            => photo[:farm], 
+        :title           => photo.title,
+        :is_public       => photo.visibility[:ispublic], 
+        :is_friend       => photo.visibility[:isfriend], 
+        :is_family       => photo.visibility[:isfamily],
+        :license_id      => photo[:license].to_i,
+        :uploaded_at     => (Time.at(photo[:dateuploaded]) rescue nil),
+        :taken_at        => (Time.parse(photo.dates[:taken]) rescue nil),
+        :owner_name      => photo.owner[:username],
+        :original_format => photo[:originalformat],
+        :updated_at      => (Time.at(photo.dates[:lastupdate].to_i) rescue nil),
+        :location        => [photo.location[:latitude], photo.location[:longitude], photo.location[:accuracy]],
+        :tags            => photo.tags.tag.collect {|t| t[:raw]},
+        :media           => photo[:media],
+        :info_added      => true,
+        :description     => photo.description,
+        :url_photopage   => (photo.urls ? photo.urls.url.to_s : nil)
+      }
+    else
+      {
+        :id              => photo[:id].to_i, 
+        :owner           => photo[:owner], 
+        :secret          => photo[:secret], 
+        :server          => photo[:server], 
+        :farm            => photo[:farm], 
+        :title           => photo[:title],
+        :is_public       => photo[:ispublic],
+        :is_friend       => photo[:isfriend], 
+        :is_family       => photo[:isfamily],
+        :license_id      => photo[:license].to_i,
+        :uploaded_at     => (Time.at(photo[:dateupload].to_i) rescue nil),
+        :taken_at        => (Time.parse(photo[:datetaken]) rescue nil),
+        :owner_name      => photo[:ownername],
+        :icon_server     => photo[:iconserver],
+        :icon_farm       => photo[:iconfarm],
+        :original_format => photo[:originalformat],
+        :updated_at      => (Time.at(photo[:lastupdate].to_i) rescue nil),
+        :location        => [photo[:latitude], photo[:longitude], photo[:accuracy]],
+        :tags            => photo[:tags],
+        :machine_tags    => photo[:machine_tags],
+        :o_dims          => photo[:o_dims],
+        :views           => photo[:views].to_i,
+        :media           => photo[:media]
+      }
+    end
+    new(flickr, attrs.reject {|k,v| v.nil? })
   end
 
 
